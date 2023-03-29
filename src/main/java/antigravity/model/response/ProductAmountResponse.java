@@ -11,4 +11,9 @@ public class ProductAmountResponse {
     private int originPrice; //상품 기존 가격
     private int discountPrice; //총 할인 금액
     private int finalPrice; //확정 상품 가격
+
+    public int getFinalPrice() {
+        // 천 단위 절삭
+        return (this.finalPrice / 1000) * 1000;
+    }
 }
