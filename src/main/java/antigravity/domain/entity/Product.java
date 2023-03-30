@@ -18,9 +18,6 @@ public class Product {
     private String name;
     private int price;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<PromotionProducts> promotionProducts = new ArrayList<>();
-
     @Builder
     public Product(String name, int price) {
         this.name = name;

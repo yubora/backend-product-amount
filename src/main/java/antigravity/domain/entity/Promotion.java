@@ -24,9 +24,6 @@ public class Promotion {
     private Date use_started_at; // 쿠폰 사용가능 시작 기간
     private Date use_ended_at; // 쿠폰 사용가능 종료 기간
 
-    @OneToMany(mappedBy = "promotion", cascade = CascadeType.ALL)
-    private List<PromotionProducts> promotionProducts = new ArrayList<>();
-
     @Builder
     public Promotion(PromotionType promotion_type, String name, String discount_type, int discount_value, Date use_started_at, Date use_ended_at) {
         this.promotion_type = promotion_type;
