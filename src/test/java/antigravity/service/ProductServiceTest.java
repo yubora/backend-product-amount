@@ -35,10 +35,6 @@ class ProductServiceTest {
     @Autowired
     PromotionProductsRepository promotionProductsRepository;
 
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-    Date use_started_at;
-    Date use_ended_at;
-
     @BeforeEach
     void clean() {
         productRepository.deleteAll();
@@ -136,8 +132,9 @@ class ProductServiceTest {
                 .build());
 
         // 쿠폰 세팅
-        use_started_at = formatter.parse("2023-03-01");
-        use_ended_at = formatter.parse(endDt);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date use_started_at = formatter.parse("2023-03-01");
+        Date use_ended_at = formatter.parse(endDt);
 
         List<Promotion> promotions = promotionRepository.saveAll(List.of(
                 Promotion.builder()
