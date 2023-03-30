@@ -39,7 +39,6 @@ class ProductServiceTest {
     void clean() {
         productRepository.deleteAll();
         promotionRepository.deleteAll();
-        promotionProductsRepository.deleteAll();
     }
 
     @Test
