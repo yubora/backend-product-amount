@@ -1,12 +1,30 @@
 package antigravity.domain.entity;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
-@Builder
+import javax.persistence.*;
+
+@NoArgsConstructor
+@Getter
+@Entity
 public class PromotionProducts {
-    private int id;
-    private int promotionId;
-    private int productId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "promotion_id")
+    private Promotion promotion;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @Builder
+    public PromotionProducts(Promotion promotion, Product product) {
+        this.promotion = promotion;
+        this.product = product;
+    }
 }

@@ -2,7 +2,7 @@ DROP TABLE product IF EXISTS;
 
 CREATE TABLE product
 (
-    id    INTEGER NOT NULL,
+    id    INTEGER NOT NULL AUTO_INCREMENT,
     name  VARCHAR(255),
     price INTEGER,
     PRIMARY KEY (id)
@@ -12,7 +12,7 @@ DROP TABLE promotion IF EXISTS;
 
 CREATE TABLE promotion
 (
-    id             INTEGER NOT NULL,
+    id             INTEGER NOT NULL AUTO_INCREMENT,
     promotion_type VARCHAR(10),
     name           VARCHAR(255),
     discount_type  VARCHAR(15),
@@ -27,7 +27,7 @@ DROP TABLE promotion_products IF EXISTS;
 
 CREATE TABLE promotion_products
 (
-    id           INTEGER NOT NULL,
+    id           INTEGER NOT NULL AUTO_INCREMENT,
     promotion_id INTEGER,
     product_id   INTEGER,
     PRIMARY KEY (id)

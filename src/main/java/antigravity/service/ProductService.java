@@ -2,29 +2,35 @@ package antigravity.service;
 
 import antigravity.domain.entity.Product;
 import antigravity.domain.entity.Promotion;
+import antigravity.domain.entity.PromotionProducts;
 import antigravity.domain.entity.PromotionType;
 import antigravity.model.request.ProductInfoRequest;
 import antigravity.model.response.ProductAmountResponse;
 import antigravity.repository.ProductRepository;
-import antigravity.repository.PromotionRepository;
+import antigravity.repository.PromotionProductsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
-    private final PromotionRepository promotionRepository;
+    private final PromotionProductsRepository promotionProductsRepository;
 
-    public ProductAmountResponse getProductAmount(ProductInfoRequest request) {
+    @Transactional(readOnly = true)
+    public ProductAmountResponse getProductAmount(ProductInfoRequest request) throws IllegalArgumentException {
         System.out.println("상품 가격 추출 로직을 완성 시켜주세요.");
 
-        Product product = productRepository.getProduct(request.getProductId());
+        Product product = productRepository.findById(request.getProductId()).orElseThrow();
+        List<PromotionProducts> promotionProducts = promotionProductsRepository.findValidByProductId(request.getProductId());
 
         // 총 할인 가격 조회
         int discountPrice = 0;
-        for (int couponId : request.getCouponIds()) {
-            Promotion promotion = getPromotion(couponId);
+        for (PromotionProducts pp : promotionProducts) {
+            Promotion promotion = pp.getPromotion();
             discountPrice += getDiscountPrice(product, promotion);
         }
 
@@ -34,10 +40,6 @@ public class ProductService {
                 .discountPrice(discountPrice)
                 .finalPrice(product.getPrice() - discountPrice)
                 .build();
-    }
-
-    public Promotion getPromotion(int id) {
-        return promotionRepository.getPromotion(id);
     }
 
     /**

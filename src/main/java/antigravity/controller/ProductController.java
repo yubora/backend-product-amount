@@ -27,10 +27,10 @@ public class ProductController {
     }
 
     private ProductInfoRequest getParam() {
-        int[] couponIds = {1, 2};
+        long[] couponIds = {1L, 2L};
 
         ProductInfoRequest request = ProductInfoRequest.builder()
-                .productId(1)
+                .productId(1L)
                 .couponIds(couponIds)
                 .build();
 
