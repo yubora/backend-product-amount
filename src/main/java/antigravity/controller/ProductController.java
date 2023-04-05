@@ -19,9 +19,9 @@ public class ProductController {
 
     //상품 가격 추출 api
     @GetMapping("/amount")
-    public ResponseEntity<ProductAmountResponse> getProductAmount() {
+    public ResponseEntity<ProductAmountResponse> getProductAmount(ProductInfoRequest request) {
 
-        ProductAmountResponse response = service.getProductAmount(getParam());
+        ProductAmountResponse response = service.getProductAmount(request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

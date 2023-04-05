@@ -17,12 +17,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class ProductService {
+    private final static int MIN_PRICE = 10000;
     private final ProductRepository productRepository;
     private final PromotionProductsRepository promotionProductsRepository;
 
     @Transactional(readOnly = true)
     public ProductAmountResponse getProductAmount(ProductInfoRequest request) {
-        System.out.println("상품 가격 추출 로직을 완성 시켜주세요.");
+        if (request == null || request.getProductId() == null) {
+            throw new IllegalArgumentException();
+        }
 
         Product product = productRepository.findById(request.getProductId()).orElseThrow();
         List<PromotionProducts> promotionProducts = promotionProductsRepository.findValidByProductId(request.getProductId());
@@ -32,7 +35,14 @@ public class ProductService {
         for (PromotionProducts pp : promotionProducts) {
             Promotion promotion = pp.getPromotion();
             discountPrice += getDiscountPrice(product, promotion);
+
+            // FIXME 프로모션 적용 후, 최소 가격 이하가 될 경우 프로모션 우선순위는?
+            if (product.getPrice() - discountPrice <= MIN_PRICE) {
+                discountPrice -= getDiscountPrice(product, promotion);
+                break;
+            }
         }
+
 
         return ProductAmountResponse.builder()
                 .name(product.getName())
