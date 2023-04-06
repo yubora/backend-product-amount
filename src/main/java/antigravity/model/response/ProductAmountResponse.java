@@ -12,6 +12,17 @@ public class ProductAmountResponse {
     private int discountPrice; //총 할인 금액
     private int finalPrice; //확정 상품 가격
 
+    public ProductAmountResponse(String name, int originPrice, int discountPrice, int finalPrice) {
+        if (finalPrice < 10000 || finalPrice > 10000000) {
+            throw new IllegalArgumentException("상품 가격은 10,000원 이상, 10,000,000원 이하만 가능합니다.");
+        }
+
+        this.name = name;
+        this.originPrice = originPrice;
+        this.discountPrice = discountPrice;
+        this.finalPrice = finalPrice;
+    }
+
     public int getFinalPrice() {
         // 천 단위 절삭
         return (this.finalPrice / 1000) * 1000;

@@ -33,4 +33,18 @@ public class Promotion {
         this.use_started_at = use_started_at;
         this.use_ended_at = use_ended_at;
     }
+
+    /**
+     * 프로모션 타입별 최종 할인 금액 조회
+     * PromotionType.COUPON: discount_value 반환
+     * PromotionType.CODE: 상품 정상가의 discount_value(%) 가격 환산하여 반환
+     */
+    public int getDiscount_value(int originalPrice) {
+        PromotionType promotionType = this.getPromotion_type();
+        if (promotionType == PromotionType.CODE) {
+            double percent = this.getDiscount_value() / 100.00;
+            return (int) (originalPrice * percent);
+        }
+        return this.getDiscount_value();
+    }
 }

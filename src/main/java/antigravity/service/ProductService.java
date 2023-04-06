@@ -31,18 +31,7 @@ public class ProductService {
         List<PromotionProducts> promotionProducts = promotionProductsRepository.findValidByProductId(request.getProductId());
 
         // 총 할인 가격 조회
-        int discountPrice = 0;
-        for (PromotionProducts pp : promotionProducts) {
-            Promotion promotion = pp.getPromotion();
-            discountPrice += getDiscountPrice(product, promotion);
-
-            // FIXME 프로모션 적용 후, 최소 가격 이하가 될 경우 프로모션 우선순위는?
-            if (product.getPrice() - discountPrice <= MIN_PRICE) {
-                discountPrice -= getDiscountPrice(product, promotion);
-                break;
-            }
-        }
-
+        int discountPrice = getDiscountPrice(product.getPrice(), promotionProducts);
 
         return ProductAmountResponse.builder()
                 .name(product.getName())
@@ -52,17 +41,18 @@ public class ProductService {
                 .build();
     }
 
-    /**
-     * 프로모션 타입별 최종 할인 금액 조회
-     * PromotionType.COUPON: discount_value 반환
-     * PromotionType.CODE: 상품 정상가의 discount_value(%) 가격 환산하여 반환
-     */
-    public int getDiscountPrice(Product product, Promotion promotion) {
-        PromotionType promotionType = promotion.getPromotion_type();
-        if (promotionType == PromotionType.CODE) {
-            double percent = promotion.getDiscount_value() / 100.00;
-            return (int) (product.getPrice() * percent);
+    public int getDiscountPrice(int originalPrice, List<PromotionProducts> promotionProducts) {
+        int totalDiscountPrice = 0;
+
+        // FIXME 종료임박순으로 조회하여 순서대로 적용
+        for (PromotionProducts pp : promotionProducts) {
+            Promotion promotion = pp.getPromotion();
+            int promotionPrice = promotion.getDiscount_value(originalPrice);
+
+            if (MIN_PRICE <= originalPrice - (promotionPrice + totalDiscountPrice)) {
+                totalDiscountPrice += promotionPrice;
+            }
         }
-        return promotion.getDiscount_value();
+        return totalDiscountPrice;
     }
 }
